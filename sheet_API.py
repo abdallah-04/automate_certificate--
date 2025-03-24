@@ -1,27 +1,57 @@
-import email
-import gspread
-from dotenv import load_dotenv,dotenv_values
+from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
 import os
-import pickle
-load_dotenv()
+# Define your scopes
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-scopes = [os.getenv("SCOPES")]
-creds = Credentials.from_service_account_file("credentials.json", scopes=scopes)
-client = gspread.authorize(creds)
+def authenticate_sheets():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    else:
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+        creds = flow.run_local_server(port=0)
 
-sheet_id = os.getenv("SHEET_ID")
-sheet = client.open_by_key(sheet_id).sheet1  
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
 
-Names_list = sheet.col_values(2)
-Emails_list=sheet.col_values(3)
+    return build('sheets', 'v4', credentials=creds)
 
-fixed_names = []
+def read_sheet_data(spreadsheet_id, range_name):
+    service = authenticate_sheets()
+    sheet = service.spreadsheets()
+    result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    values = result.get('values', [])
 
-for name in Names_list:
-    parts = name.strip().split()
-    if len(parts) >= 2:
-        fixed_name = f"{parts[0]} {parts[-1]}"
-        fixed_names.append(fixed_name)
+    if not values:
+        print('No data found.')
+    else: 
+        print('Sheet data:')
+        for row in values:
+            print(row)
+
+    return values
+names = []
+emails = []
+
+def get_names_and_emails(spreadsheet_id):
+    global names, emails
+    service = authenticate_sheets()
+    sheet = service.spreadsheets()
+
+    range_name = "'Form Responses 1'!B2:C"
+    result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+    values = result.get('values', [])
+
+    for row in values:
+        if len(row) >= 2:
+            names.append(row[0])   # Name
+            emails.append(row[1])  # Email
+        elif len(row) == 1:
+            names.append(row[0])
+            emails.append('')      # Empty email
+
+# Automatically populate lists when file is run or imported
+SPREADSHEET_ID = '1lfgOspCNlBCBQ4V-gU9KEAO5D0ftQN66zkcFTjFIf8c'
+get_names_and_emails(SPREADSHEET_ID)
