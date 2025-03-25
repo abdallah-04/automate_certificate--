@@ -1,7 +1,7 @@
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 import os
-# Define your scopes
+
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 def authenticate_sheets():
@@ -46,12 +46,12 @@ def get_names_and_emails(spreadsheet_id):
 
     for row in values:
         if len(row) >= 2:
-            names.append(row[0])   # Name
+            names.append(row[0])   
             emails.append(row[1])  # Email
         elif len(row) == 1:
             names.append(row[0])
             emails.append('')      # Empty email
 
 # Automatically populate lists when file is run or imported
-SPREADSHEET_ID = '1lfgOspCNlBCBQ4V-gU9KEAO5D0ftQN66zkcFTjFIf8c'
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 get_names_and_emails(SPREADSHEET_ID)

@@ -19,12 +19,11 @@ font = ImageFont.truetype(font_path, 100)
 
 output_dir = os.path.join(os.getenv("BASE_DIR"), f"{workshop_name}")
 os.makedirs(output_dir, exist_ok=True)
-count=0
+
 for name in Names:
     img = Image.open(filename)
     draw = ImageDraw.Draw(img)
     img_width, img_height = img.size
-    count+=1
     bbox = draw.textbbox((0, 0), name, font=font)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
