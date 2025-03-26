@@ -1,10 +1,6 @@
 import base64
 import os
 from email.message import EmailMessage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -67,7 +63,7 @@ def send_email(service, sender, to, subject, message_text, certificate_path):
      body = {"raw": encoded_message}
      try:
          sent = service.users().messages().send(userId="me", body=body).execute()
-         #make file
+        
          print(f"✅ Sent to {to}, ID: {sent['id']}")
          file.write(f"✅ Sent to {to}, ID: {sent['id']}\n")
      except Exception as e:
