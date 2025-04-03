@@ -3,7 +3,6 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 import os
 
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 TOKEN_SHEETS = os.getenv("TOKEN_SHEETS")
 
 def authenticate_sheets():
