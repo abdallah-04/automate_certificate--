@@ -1,0 +1,22 @@
+# Ignore Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environment
+venv/
+.env
+
+# Ignore credential and token files
+credentials.json
+tokens/
+token_gmail.json
+token_sheets.json
+
+# Ignore generated certificates
+generated_certificates/
+
+# Ignore dependency logs and system files
+*.log
+.DS_Store
+.git/
