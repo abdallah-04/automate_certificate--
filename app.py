@@ -19,7 +19,7 @@ def run_gui():
     )
     title_label.pack(pady=(15, 10))
 
-    def create_field(parent, label_text, entry_widget=None, is_dropdown=False, values=None, browse=False):
+    def create_field(parent, label_text, entry_widget=None, is_dropdown=False, values=None, browse=False, initial_value=""):
         frame = tk.Frame(parent, bg=BG_COLOR)
         frame.pack(pady=5, padx=20, anchor="w", fill="x")
 
@@ -31,12 +31,13 @@ def run_gui():
             widget = ttk.Combobox(frame, textvariable=var, values=values, width=25)
         else:
             widget = tk.Entry(frame, width=27)
+            widget.insert(0, initial_value)  
 
         widget.pack(side="left")
 
         if browse:
             def browse_path():
-                path = filedialog.askopenfilename(title="Select Certificate Template")
+                path = filedialog.askopenfilename(title="Select Font Path")  
                 widget.delete(0, tk.END)
                 widget.insert(0, path)
 
@@ -51,7 +52,7 @@ def run_gui():
     sender_entry = create_field(window, "Sender Name:")
     position_entry = create_field(window, "Position:")
     cert_path_entry = create_field(window, "Certificate Path:", browse=True)
-    font_path_entry = create_field(window, "Font Path:", browse=True)
+    font_path_entry = create_field(window, "Font Path:", browse=True, initial_value=r"C:\Windows\Fonts\times.ttf")
 
     body_frame = tk.Frame(window, bg=BG_COLOR)
     body_frame.pack(pady=5, padx=20, anchor="w", fill="x")
